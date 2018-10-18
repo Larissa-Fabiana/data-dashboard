@@ -1,0 +1,82 @@
+/*
+ * Estilos de tu proyecto
+
+ amarelo código --  #FFE521
+ rosa código --  #FF009E
+ verde código -- #56F89A
+
+ cinza - fora da paleta  -- #BEC2C4
+ cinza escuro -- #6F777B
+
+títulos:     font-family: 'Bitter', serif;
+textos:     font-family: 'Open Sans', sans-serif;
+ */
+
+* {
+  font-family: 'Open Sans', sans-serif;
+  margin: 0;
+}
+.logo {
+  border-radius: 50%;
+  padding: 5px;
+}
+.header {
+  border-bottom: 1px solid #BEC2C4;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  vertical-align: middle;
+  align-items: center;
+}
+.side-menu{  
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-around;
+  text-align: center;
+}
+input {
+  background-color: #56F89A;
+  border-radius: 10px;
+  width: 150px;
+  margin: 10px;
+  padding: 10px;
+  font-size: 16px;
+  font-weight: bold;
+}
+.exit {
+  border-radius: 3px;
+  background-color: #BEC2C4;
+  box-sizing: border-box;
+  border-radius: 10px;
+  width: 60px;
+  padding: 10px 15px 10px 15px;
+  margin: 20px;
+  font-size: 16px;
+  font-weight: bold;
+}
+#drop-menu{
+  background-color: #BEC2C4;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: bold;
+  margin: 10px;
+  padding: 5px;
+}
+#infos {
+  width: 80%;
+  margin: 0 auto;
+  display: flex; 
+  flex-wrap: flex;
+  justify-content: space-between;
+}
+div {
+  border: 1px solid #BEC2C4;
+  border-radius: 3px;
+  box-sizing: border-box;
+  margin: 2px;
+  padding: 5px;
+  text-align: center;
+  flex-grow: 1;
+  flex-basis: 25%;
+}

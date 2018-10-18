@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Data Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css" media="screen" href="css/main.css" />
+  <link href="https://fonts.googleapis.com/css?family=Bitter|Open+Sans" rel="stylesheet">
+</head>
+<body id="body">
+  <header class="header">
+    <img class="logo" width="130px" src="assets/images/Laboratoria_RGB_logo-11.png"/>
+    <menu class="side-menu">
+      <select id="drop-menu">
+          <option selected>selecione a sede</option>
+          <option value="AQP">Arequipa</option>
+          <option value="LIM">Lima</option>
+          <option value="CDMX">Cidade do México</option>
+          <option value="SCL">Santiago</option>
+      </select>
+      <input type="submit" value="Geral" onclick="generalPage()">
+      <input type="submit" value="Estudantes" onclick="studentsPage()">
+      <input type="submit" value="Bootcamp" onclick="bootcampPage()">
+      <input type="submit" value="Equipe" onclick="teamPage()">
+    </menu>
+    <input type="submit" value="Sair" onclick="goOutPage()" class="exit">
+  </header>
+    
+  <section id="infos">
+    
+  </section>
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+  <!-- Base de datos -->
+  <script src="./js/data.js"></script>
+  <!-- Aquí va tus archivos JS -->
+  <script src="./js/app.js"></script>
+</body>
+</html>
