@@ -7,31 +7,38 @@ function generalPage(){ //função de página
 function sumStudents(){  // total de estudantes e desistentes
   $("#infos").html('');
   var sede = $('#drop-menu').val();
-  var sum = 0;
-  var result = [];
-  var total = 0;
+
   for(turma in data[sede]){
+    var sum = 0;
+    var result = [];
+    var total = 0;
+    // console.log(turma);
     $("#infos").append(`<div class='periodElement'>${turma}</div>`);
     for(i in data[sede][turma]['students']){
-      if (data[sede][turma]['students'][i]['name']==undefined){
+      // console.log(i);
+      if (data[sede][turma]['students'][i]['name'] !== undefined){
         //console.log('NÃO TEM NADA');
-      }
-      else{
         sum+=1
       }
+      // else{
+      //   sum+=1
+      // }
       var students = data[sede][turma]['students'][i]['active'];
       total+=1;
       if (students === false) {
         result.push(i);
         var resultFinal = result.length;
         resultFinal = (resultFinal/100) * total;
-        resultFinal.toFixed(2);
-        resultFinal = resultFinal + '%';
+        // resultFinal.toFixed(2);
+        // resultFinal = resultFinal + '%';
       } 
     }
+    console.log(i);
+    // console.log(sum);
+    // console.log(resultFinal);
     $('.periodElement').append(`
     <div class='sumStudentsElement'>total de alunas: ${sum}</div>
-    <div class='dropoutsElement'>desistências: ${resultFinal}</div>
+    <div class='dropoutsElement'>desistências: ${resultFinal.toFixed(2) + '%'}</div>
     `);
   }
 }
@@ -43,22 +50,13 @@ function grades() {  //function para notas tech e hse totais
     var hseTotal = [];
     for (i in data[sede][turma]['students']){
       for (j in data[sede][turma]['students'][i]['sprints']) {
-        var techGrade = data[sede][turma]['students'][i]['sprints'][j]['score']['tech'];
-        var hseGrade = data[sede][turma]['students'][i]['sprints'][j]['score']['hse'];
-        techTotal.push(techGrade);  //joga notas na array tech
-        hseTotal.push(hseGrade);  //joga notas na array hse
-        var tech = 0;
-        var resultTech = 0;
-        for(var x=0; x<techTotal.length; x++){
-          tech+=techTotal[j];
-          resultTech = tech/techTotal.length;
-        }
-        var habilidadesSE = 0;
-        var resultHSE = 0;
-        for(var x=0; x<hseTotal.length; x++){
-          habilidadesSE+=hseTotal[j];
-          resultHSE = habilidadesSE/hseTotal.length;
-        }
+
+        techTotal.push(data[sede][turma]['students'][i]['sprints'][j]['score']['tech']);  //joga notas na array tech
+        hseTotal.push(data[sede][turma]['students'][i]['sprints'][j]['score']['hse']);  //joga notas na array hse
+
+        var resultTech = resultTechAndHseBootcamp(techTotal, j)
+        var resultHSE = resultTechAndHseBootcamp(hseTotal, j)
+
       } 
     }
   }
@@ -67,6 +65,28 @@ function grades() {  //function para notas tech e hse totais
   <div class='hseElement'>A média de notas HSE no Bootcamp é: ${resultHSE}</div>
   `);
 }
+
+function resultTechAndHseBootcamp(total, j){
+  var hability = 0;
+  var result = 0;
+  for(var x=0; x < total.length; x++ ){
+    hability += total[j];
+    result = hability / total.length;
+  }
+  return(result);
+}
+
+function resultTechAndHse(total){
+  var hability = 0;
+  var result = 0;
+  for(var i=0; i < total.length; i++ ){
+    hability += total[i];
+    result = hability / total.length;
+  }
+  return(result);
+}
+
+ 
 
 function bootcampPage(){ //função de página
   $("#infos").html('');
@@ -87,12 +107,7 @@ function averageNps(){ //NPS
       arraySprints.push(i);
       result.push(studentsPromoters-studentsDetractors);
     }
-    var total = 0;
-    var resultFinal = 0;
-    for(var j=0; j<result.length; j++){
-      total+=result[j];
-      resultFinal = total/result.length;
-    }
+    var resultFinal = resultTechAndHse(result)
     $(".averageNpsElement").append(`
     <div class='sumSprintsElement'>O número de sprints é de: ${result.length} sprints</div>
     <div class='npsElement'>A média do NPS dos sprints foi de ${parseFloat(resultFinal.toFixed(2))} %</div>
@@ -104,32 +119,44 @@ function bestGrades() {  //function para alunas acima de 70%, tech e hse
   var sede = $('#drop-menu').val();
   for (turma in data[sede]) {   // alunas acima de 70% por turma
     $("#infos").append(`<div class='bestGradesElement'>${turma}</div>`);
-    arrayOfSprints = [];
-    arrayOfHSESprints = [];
-    studentsOfSprints = [];
-    studentsOfHSE = [];
+    var arrayOfSprints = [];
+    var arrayOfHSESprints = [];
+    var studentsOfSprints = [];
+    var studentsOfHSE = [];
     for (i in data[sede][turma]['students']){
-      var techTotal = [];
-      var hseTotal = [];
+      // var techTotal = [];
+      // var hseTotal = [];
       //duplicar esse for
-      for (j in data[sede][turma]['students'][i]['sprints']) {          
-        var techGrade = data[sede][turma]['students'][i]['sprints'][j]['score']['tech'];
-        if (techGrade >= 1280) {
-          techTotal.push(techGrade);
-        } else {techTotal.push(0);}
-        if(techTotal[j]>0){
-          arrayOfSprints.push(data[sede][turma]['students'][i]['name']);
-        }
-      }
-      for (y in data[sede][turma]['students'][i]['sprints']) {          
-        var hseGrade = data[sede][turma]['students'][i]['sprints'][y]['score']['hse'];
-        if (hseGrade >= 840) {
-          hseTotal.push(hseGrade);
-        } else {hseTotal.push(0);}
-        if(hseTotal[y]>0){
-          arrayOfHSESprints.push(data[sede][turma]['students'][i]['name']);
-        }
-      }
+      var arrTech = arrayOfSprint('tech', 1280, data[sede][turma]['students'][i])
+      arrTech.forEach(element => {
+        arrayOfSprints.push(element)
+      });
+      var arrHse = arrayOfSprint('tech', 1280, data[sede][turma]['students'][i])
+      arrHse.forEach(element => {
+        arrayOfHSESprints.push(element)
+      });
+      // arrayOfSprints.push(arrayOfSprint('tech', 1280))
+      // arrayOfHSESprints.push(arrayOfSprint('hse', 840))
+
+
+      // for (j in data[sede][turma]['students'][i]['sprints']) {          
+      //   var techGrade = data[sede][turma]['students'][i]['sprints'][j]['score']['tech'];
+      //   if (techGrade >= 1280) {
+      //     techTotal.push(techGrade);
+      //   } else {techTotal.push(0);}
+      //   if(techTotal[j]>0){
+      //     arrayOfSprints.push(data[sede][turma]['students'][i]['name']);
+      //   }
+      // }
+      // for (y in data[sede][turma]['students'][i]['sprints']) {          
+      //   var hseGrade = data[sede][turma]['students'][i]['sprints'][y]['score']['hse'];
+      //   if (hseGrade >= 840) {
+      //     hseTotal.push(hseGrade);
+      //   } else {hseTotal.push(0);}
+      //   if(hseTotal[y]>0){
+      //     arrayOfHSESprints.push(data[sede][turma]['students'][i]['name']);
+      //   }
+      // }
       var ind = arrayOfSprints.indexOf(data[sede][turma]['students'][i]['name']);
       if (ind>=0){
         studentsOfSprints.push(ind);
@@ -146,6 +173,40 @@ function bestGrades() {  //function para alunas acima de 70%, tech e hse
   }
 }
 
+function arrayOfSprint(techOrHse, min, dataBase){
+  var total = [];
+  var arrayOfSprints = [];
+  for (j in dataBase['sprints']) {          
+    var grade = dataBase['sprints'][j]['score'][techOrHse];
+    if (grade >= min) {
+      total.push(grade);
+    } else {total.push(0);}
+    if(total[j]>0){
+      arrayOfSprints.push(dataBase['name']);
+    }
+  }
+  return(arrayOfSprints);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 function teamPage() { //função de página
   $("#infos").html('');
   $('#drop-menu').change( event => $("#infos").html('') );
@@ -160,25 +221,12 @@ function teachers(){ //notas de professores e jedis
     var resultTeacher = [];
     var resultJedi = [];
     for (i in data[sede][turma]['ratings']){
-      var teachers = data[sede][turma]['ratings'][i]['teacher'];
-      var jedis = data[sede][turma]['ratings'][i]['jedi'];
       arraySprints.push(i);
-      var sizeSprints = arraySprints.length;
-      resultTeacher.push(teachers);  
-      resultJedi.push(jedis);     
+      resultTeacher.push(data[sede][turma]['ratings'][i]['teacher']);  
+      resultJedi.push(data[sede][turma]['ratings'][i]['jedi']);     
     }
-    var totalT = 0;
-    var resultFinalT = 0;
-    for(var j=0; j<resultTeacher.length; j++){
-      totalT+=resultTeacher[j];
-      resultFinalT = totalT/resultTeacher.length;
-    }
-    var totalJ = 0;
-    var resultFinalJ = 0;
-    for(var j=0; j<resultJedi.length; j++){
-      totalJ+=resultJedi[j];
-      resultFinalJ = totalJ/resultJedi.length;
-    }
+    var resultFinalT = resultTechAndHse(resultTeacher)
+    var resultFinalJ = resultTechAndHse(resultJedi)
   }
   $("#infos").append(`
   <div class='teachersElement'>A média dos mentores é ${resultFinalT.toFixed(2)}</div>
@@ -196,15 +244,10 @@ function satisfaction(){ //satisfação média por sede
       var cumpleExpectancy = data[sede][turma]['ratings'][i]['student']['cumple'];
       var superaExpectancy = data[sede][turma]['ratings'][i]['student']['supera'];
       arraySprints.push(i);
-      var sizeSprints = arraySprints.length;
+      // var sizeSprints = arraySprints.length;
       result.push(cumpleExpectancy + superaExpectancy);
     }
-    var total = 0;
-    var resultFinal = 0;
-    for(var j=0; j<result.length; j++){
-      total+=result[j];
-      resultFinal = total/result.length;
-    } 
+    var resultFinal = resultTechAndHse(result)
     $(".satisfactionElement").append(`<div class='expectationElement'>Alunas satisfeitas com a experiência na Laboratoria: ${resultFinal.toFixed(2)} %</div>`);
   }
 }
@@ -236,6 +279,6 @@ function studentList(){ //lista de estudantes
 }
 
 function goOutPage(){ //função de página de logout
-  window.onload = document.body.html('');
+  window.onload = $('document').body.html('');
   $("#body").append(`<h1 class='outputElement'>Nos vemos na próxima :)</h1>`);
 }
