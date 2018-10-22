@@ -12,33 +12,26 @@ function sumStudents(){  // total de estudantes e desistentes
     var sum = 0;
     var result = [];
     var total = 0;
-    // console.log(turma);
-    $("#infos").append(`<div class='periodElement'>${turma}</div>`);
-    for(i in data[sede][turma]['students']){
-      // console.log(i);
-      if (data[sede][turma]['students'][i]['name'] !== undefined){
-        //console.log('NÃO TEM NADA');
+    $("#infos").append(`<div class='periodElement' data-turma=${turma}>${turma}</div>`);
+    
+    for(student of data[sede][turma]['students']) {
+      if (student.name !== undefined){
         sum+=1
       }
-      // else{
-      //   sum+=1
-      // }
-      var students = data[sede][turma]['students'][i]['active'];
-      total+=1;
-      if (students === false) {
-        result.push(i);
-        var resultFinal = result.length;
-        resultFinal = (resultFinal/100) * total;
-        // resultFinal.toFixed(2);
-        // resultFinal = resultFinal + '%';
-      } 
+
+      var isStudentActive = student.active;
+      total += 1;
+
+      var resultFinal = 0;
+      if (!isStudentActive) {
+        result.push(student);
+        resultFinal = (result.length/100) * total;
+      }
     }
-    console.log(i);
-    // console.log(sum);
-    // console.log(resultFinal);
-    $('.periodElement').append(`
-    <div class='sumStudentsElement'>total de alunas: ${sum}</div>
-    <div class='dropoutsElement'>desistências: ${resultFinal.toFixed(2) + '%'}</div>
+
+    $(`div[data-turma=${turma}]`).append(`
+      <div class='sumStudentsElement'>total de alunas: ${sum}</div>
+      <div class='dropoutsElement'>desistências: ${resultFinal.toFixed(2) + '%'}</div>
     `);
   }
 }
