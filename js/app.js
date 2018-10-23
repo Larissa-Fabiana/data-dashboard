@@ -41,11 +41,15 @@ function grades() {  //function para notas tech e hse totais
   for (turma in data[sede]) {  //arrays com todas as notas em uma unica linha abaixo
     var techTotal = [];
     var hseTotal = [];
-    for (i in data[sede][turma]['students']){
-      for (j in data[sede][turma]['students'][i]['sprints']) {
-
-        techTotal.push(data[sede][turma]['students'][i]['sprints'][j]['score']['tech']);  //joga notas na array tech
-        hseTotal.push(data[sede][turma]['students'][i]['sprints'][j]['score']['hse']);  //joga notas na array hse
+    for (student of data[sede][turma]['students']){
+      // console.log('xuxu');
+      // console.log(student.sprints);
+      for (j in student['sprints']) {
+        // console.log('xuxu');
+        // console.log(j);
+        // console.log(sprint['score']['tech']);
+        techTotal.push(student['sprints'][j]['score']['tech']);  //joga notas na array tech
+        hseTotal.push(student['sprints'][j]['score']['hse']);  //joga notas na array hse
 
         var resultTech = resultTechAndHseBootcamp(techTotal, j)
         var resultHSE = resultTechAndHseBootcamp(hseTotal, j)
@@ -92,7 +96,7 @@ function averageNps(){ //NPS
   var sede = $('#drop-menu').val();
   var arraySprints = [];
   for (turma in data[sede]) {
-    $("#infos").append(`<div class='averageNpsElement'>${turma}</div>`);
+    $("#infos").append(`<div class='averageNpsElement' data-turma=${turma}>${turma}</div>`);
     var result = [];
     for (i in data[sede][turma]['ratings']) {
       var studentsPromoters = data[sede][turma]['ratings'][i]['nps']['promoters'];
@@ -101,7 +105,7 @@ function averageNps(){ //NPS
       result.push(studentsPromoters-studentsDetractors);
     }
     var resultFinal = resultTechAndHse(result)
-    $(".averageNpsElement").append(`
+    $(`div[data-turma=${turma}]`).append(`
     <div class='sumSprintsElement'>O número de sprints é de: ${result.length} sprints</div>
     <div class='npsElement'>A média do NPS dos sprints foi de ${parseFloat(resultFinal.toFixed(2))} %</div>
     `);
@@ -111,7 +115,7 @@ function averageNps(){ //NPS
 function bestGrades() {  //function para alunas acima de 70%, tech e hse
   var sede = $('#drop-menu').val();
   for (turma in data[sede]) {   // alunas acima de 70% por turma
-    $("#infos").append(`<div class='bestGradesElement'>${turma}</div>`);
+    $("#infos").append(`<div class='bestGradesElement' data-turma=${turma}bestGradesElement>${turma}</div>`);
     var arrayOfSprints = [];
     var arrayOfHSESprints = [];
     var studentsOfSprints = [];
@@ -128,28 +132,7 @@ function bestGrades() {  //function para alunas acima de 70%, tech e hse
       arrHse.forEach(element => {
         arrayOfHSESprints.push(element)
       });
-      // arrayOfSprints.push(arrayOfSprint('tech', 1280))
-      // arrayOfHSESprints.push(arrayOfSprint('hse', 840))
 
-
-      // for (j in data[sede][turma]['students'][i]['sprints']) {          
-      //   var techGrade = data[sede][turma]['students'][i]['sprints'][j]['score']['tech'];
-      //   if (techGrade >= 1280) {
-      //     techTotal.push(techGrade);
-      //   } else {techTotal.push(0);}
-      //   if(techTotal[j]>0){
-      //     arrayOfSprints.push(data[sede][turma]['students'][i]['name']);
-      //   }
-      // }
-      // for (y in data[sede][turma]['students'][i]['sprints']) {          
-      //   var hseGrade = data[sede][turma]['students'][i]['sprints'][y]['score']['hse'];
-      //   if (hseGrade >= 840) {
-      //     hseTotal.push(hseGrade);
-      //   } else {hseTotal.push(0);}
-      //   if(hseTotal[y]>0){
-      //     arrayOfHSESprints.push(data[sede][turma]['students'][i]['name']);
-      //   }
-      // }
       var ind = arrayOfSprints.indexOf(data[sede][turma]['students'][i]['name']);
       if (ind>=0){
         studentsOfSprints.push(ind);
@@ -159,7 +142,7 @@ function bestGrades() {  //function para alunas acima de 70%, tech e hse
         studentsOfHSE.push(indHSE);
       }
     }
-    $(".bestGradesElement").append(`
+    $(`div[data-turma=${turma}bestGradesElement]`).append(`
     <div class='gradesElement'>A quantidade de alunas com notas TECH acima de 70% em todos os sprints é ${studentsOfSprints.length}</div>
     <div class='grdElement'>A quantidade de alunas com notas HSE acima de 70% em todos os sprints é ${studentsOfHSE.length}</div>
     `);
@@ -180,24 +163,6 @@ function arrayOfSprint(techOrHse, min, dataBase){
   }
   return(arrayOfSprints);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 function teamPage() { //função de página
@@ -231,7 +196,7 @@ function satisfaction(){ //satisfação média por sede
   var sede = $('#drop-menu').val();
   var arraySprints = [];
   for (turma in data[sede]) {
-    $("#infos").append(`<div class='satisfactionElement'>${turma}</div>`);
+    $("#infos").append(`<div class='satisfactionElement' data-turma=${turma}>${turma}</div>`);
     var result = [];
     for (i in data[sede][turma]['ratings']) {
       var cumpleExpectancy = data[sede][turma]['ratings'][i]['student']['cumple'];
@@ -241,7 +206,7 @@ function satisfaction(){ //satisfação média por sede
       result.push(cumpleExpectancy + superaExpectancy);
     }
     var resultFinal = resultTechAndHse(result)
-    $(".satisfactionElement").append(`<div class='expectationElement'>Alunas satisfeitas com a experiência na Laboratoria: ${resultFinal.toFixed(2)} %</div>`);
+    $(`div[data-turma=${turma}]`).append(`<div class='expectationElement'>Alunas satisfeitas com a experiência na Laboratoria: ${resultFinal.toFixed(2)} %</div>`);
   }
 }
 
@@ -255,19 +220,21 @@ function studentList(){ //lista de estudantes
   $("#infos").html('');
   var sede = $('#drop-menu').val();
   for(turma in data[sede]){
-    $("#infos").append(`<div class='studentElement'>${turma}</div>`);
-    $(".studentElement").append(`<div class='studentsActiveOrInative'></div>`);
+    $("#infos").append(`<div class='studentElement' data-turma=${turma}>${turma}</div>`);
+    console.log(turma)
+    $(`div[data-turma=${turma}]`).append(`<div class='studentsActiveOrInative' data-turma=${turma}studentsActiveOrInative></div>`);
     for(i in data[sede][turma]['students']){
       var stdActive = data[sede][turma]['students'][i]['active'];
-      if (stdActive === true){
+      if (stdActive){
         stdActive = "Ativa";
-        $(".studentsActiveOrInative").append(`<div class='stdnElement'>${data[sede][turma]['students'][i]['name']} - status: ${stdActive}</div>`);
+        $(`div[data-turma=${turma}]`).append(`<div class='stdnElement'>${data[sede][turma]['students'][i]['name']} - status: ${stdActive}</div>`);
       }
-      if (stdActive === false){
+      if (!stdActive){
         stdActive = "Inativa";
-        $(".studentsActiveOrInative").append(`<div class='stdnElement'>${data[sede][turma]['students'][i]['name']} - status: ${stdActive}</div>`);
+        $(`div[data-turma=${turma}]`).append(`<div class='stdnElement'>${data[sede][turma]['students'][i]['name']} - status: ${stdActive}</div>`);
       }
     }
+    // $(`div[data-turma=${turma}]`).append(`<div class='studentsActiveOrInative'></div>`);
   }
 }
 
